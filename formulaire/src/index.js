@@ -1,7 +1,30 @@
 import React from "react";
 import ReactDom from "react-dom";
-import { Formik } from "formik";
+import { Formik, Field, ErrorMessage} from "formik";
 import * as Yup from 'yup';
+
+const CustomInput = ({field, form, ...props}) => {
+  return(
+      <div className="form-group">
+      <label>{ field.name }</label>
+      <input 
+      {...field}
+      {...props}
+      type="text"
+      className="form-control"
+      />
+      </div>
+  )
+}
+
+const CustomError = (props) => {
+  return(
+    <div className="text-danger">{props.children}</div>
+  )
+
+}
+
+
 
 class App extends React.Component {
 
@@ -39,52 +62,16 @@ class App extends React.Component {
             errors,
             touched
           }) => (
-            <form
-              onSubmit={handleSubmit}
-              className="bg-white border p-5 d-flex flex-column"
-            >
-              <div className="form-group">
-                <label>Nom</label>
-                <input
-                  type="text"
-                  name="name"
-                  className="form-control"
-                  onChange={handleChange}
-                  onBlur={handleBlur}
-                  value={values.name}
-                />
-                {errors.name && touched.name ?(
-                  <div className="text-danger">{ errors.name }</div>
-                ) : null}
-              </div>
-              <div className="form-group">
-                <label>Adresse email</label>
-                <input
-                  type="email"
-                  name="email"
-                  className="form-control"
-                  onChange={handleChange}
-                  onBlur={handleBlur}
-                  value={values.email}
-                />
-                {errors.email && touched.email ?(
-                  <div className="text-danger">{ errors.email }</div>
-                ) : null}
-              </div>
-              <div className="form-group">
-                <label>Mot de passe</label>
-                <input
-                  type="password"
-                  name="password"
-                  className="form-control"
-                  onChange={handleChange}
-                  onBlur={handleBlur}
-                  value={values.password}
-                />
-                {errors.password && touched.password ?(
-                  <div className="text-danger">{ errors.password }</div>
-                ) : null}
-              </div>
+            <form onSubmit={handleSubmit} className="bg-white border p-5 d-flex flex-column">
+                <Field name="name" component={ CustomInput }/>
+                <ErrorMessage name="name" component={ CustomError }/>
+
+                <Field name="email" type="email" component={ CustomInput }/>
+                <ErrorMessage name="email" component={ CustomError }/>
+
+                <Field name="password" component={ CustomInput }/>
+                <ErrorMessage name="password" component={ CustomError }/>
+
               <button
                 type="submit"
                 className="btn btn-primary"
