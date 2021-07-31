@@ -1,8 +1,15 @@
 import React from "react";
 import ReactDom from "react-dom";
 import { Formik } from "formik";
+import * as Yup from 'yup';
 
 class App extends React.Component {
+
+  userShema = Yup.object().shape({
+    name : Yup.string().min(3, 'trop court').max(7, 'trop long').required('required') ,
+    email : Yup.string().email('mauvaise email').required('required'),
+    password : Yup.string().min(5, 'trop court')
+  })
 
   submit = (values, actions) => {
     console.log(values);
@@ -10,18 +17,6 @@ class App extends React.Component {
     actions.setSubmitting(false);
   }
 
-  validate(values){
-    console.log({values});
-    let errors = {};
-    if(!values.name){
-      errors.name= 'required'
-    }
-    else if (values.name.length < 3){
-      errors.name = 'trop court';
-    }
-
-    return errors;
-  }
 
   render() {
     return (
@@ -32,9 +27,7 @@ class App extends React.Component {
         <Formik
           onSubmit={this.submit}
           initialValues={{ name: "", email: "", password: "" }}
-          validate= {this.validate}
-          validateOnBlur={false}
-          validateOnChange={false}
+          validationSchema={this.userShema}
           
         >
           {({
@@ -74,6 +67,9 @@ class App extends React.Component {
                   onBlur={handleBlur}
                   value={values.email}
                 />
+                {errors.email && touched.email ?(
+                  <div className="text-danger">{ errors.email }</div>
+                ) : null}
               </div>
               <div className="form-group">
                 <label>Mot de passe</label>
@@ -85,6 +81,9 @@ class App extends React.Component {
                   onBlur={handleBlur}
                   value={values.password}
                 />
+                {errors.password && touched.password ?(
+                  <div className="text-danger">{ errors.password }</div>
+                ) : null}
               </div>
               <button
                 type="submit"
